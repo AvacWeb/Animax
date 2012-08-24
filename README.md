@@ -6,6 +6,13 @@ Its easy to use, and efficiently uses requestAnimationFrame when it can. Animati
 
 It works by first creating an animation object, and then giving that animation object (or multiple objects) to animax to run.
 
+```javascript
+var elem = document.getElementById('dropdown');
+
+var slideUp = animax.create('slideUp', elem);
+animax.run( slideUp );
+```
+
 Creating an Animation Object
 ---------------------
 To create an animation you must call the `animax.create` method. With this method, you can create your own custom animation, or a preset one, and you'll be returned the "animation object". The animation object is just an object literal containing all the data needed for animax to perform the animation.
@@ -75,7 +82,8 @@ Running Animation/s
 ---------------------------
 Now you know how to create an Animation object, you need to know how to run it. There are two ways of doing this; if your going to be running more than one object, then the best thing to do is to add them all to the animax stack and run them all simulataneously, else running an animation independantly will be fine.
 
-#### animax.runAll()Using the `animax.runAll()` method, which will run all the stored animations in the most efficient way possible. 
+#### animax.runAll([callback])  
+Using the `animax.runAll()` method, which will run all the stored animations in the most efficient way possible. 
 
 Here's an example, fading out three different elements:
 ```javascript
@@ -86,6 +94,7 @@ var animation3 = animax.create('fadeOut', document.getElementById('three'));
 animax.add(animation1, animation2, animation3); //add all of the animation objects
 animax.runAll(); //run them all simultaneously.
 ```
+The runAll method also takes 1 parameter, a callback function for when all animations are completed. `animax.runAll(function(){ alert('All Done!'); });`
 
 #### animax.run( animationObject [, duration])
 Alternatively, if you need to just run one animation object, then your better off using the simple `animax.run( animationObj )` method. Using this method allows you to specfify a duration for the animation to last. (this isn't available with `runAll` as the `requestAnimationFrame` is used which doesn't allow specifying delay. 
@@ -108,9 +117,9 @@ Animation Styles
 ####What are animation styles?
 The "style" dictates how the inbetween values from your start and end points will be calculated, this effects how the animation runs in many ways. 
 
-The best way to think about it, is by considering an animation of an element moving from 0 to 100 (left property). There are many ways of going about this animation; 20 increments of 5px, 10 increments of 10px, even 100 increments 1px. These options are all linear animations, as they all make the same increment each time. This would make a very plain an basic animation. The speed would stay the same throughout, it would suddenly start and suddenly end. 
+The best way to think about it, is by considering an animation of an element moving from 0 to 100 (left property). There are many ways of going about this animation; 20 increments of 5px, 10 increments of 10px, even 100 increments 1px. These options are all linear animations, as they all make the same increment each time. This would make a very plain and basic animation. The speed would stay the same throughout, it would suddenly start and suddenly end. 
 
-Now the styles allow you to make the animations look smooth, accellerate and slow down. Thinking back to our example above, if we were to perform 5 increments of 10, 5 increments of 6 and then 5 increments of 4. It would appear as if the element is slowing down near the end of the animation. 
+The styles allow you to make the animations look smooth, accellerate and slow down. Thinking back to our example above, if we were to perform 5 increments of 10, 5 increments of 6 and then 5 increments of 4. It would appear as if the element is slowing down near the end of the animation. 
 
 ####How do I create the increments?
 The increments that dictate a style is in an array, and each figure in the array represents a percentage increase. 
@@ -122,7 +131,7 @@ If our increment array was like this:
 `[1,2,3,4,5,6,7,8,9,10,9,8,7,6,5,4,3,2,1]`
 This would be a much smoother animation, it starts off slow, speeds up in the middle and slows down again. The element would go from 0px, 1px, 3px, 6px, 10px and so on...
 
-__The values must add up to 100 to complete 100% of animation__
+__The values must add up to 100 to complete 100% of animation__    
 If your values don't add up to 100, then the end value will not be reached. For example, if you have only 5 increments of 10, then only 50% will be completed. 
 
 This is actually handy, as it means you can move an animation backwards from the end value, maybe finishing in the middle or making it go back to the start. 
@@ -157,6 +166,8 @@ var animation = animax.create({
 		e.style.left = v + 'px';
 	}
 }, element);
+
+animax.run( animationObj, 'fast'); // OR set the duration as second paramter. 
 ```
 
 Preset Animations
@@ -169,9 +180,53 @@ Which will return an animation object to make the element fade out. It is used i
 ####Available Presets.
 More will be added over time.
 
-__fadeOut__ - make an element fade out. Second argument must be DOM element to fade out.
-__fadeIn__ - Same as fadeOut but fading in obviously.
-__slideUp__ - Make an element slide up and be hidden. Second argument must an element.
-__slideDown__ - same as slideUp but down. To show an element.
-__scrollUp__ - Scroll to top of the page smoothly. (no element needed)
-__scrollTo__ - Scroll the window to a value. (y axis). Second argument must be the value to scroll to.
+__fadeOut__ - make an element fade out. Second argument must be DOM element to fade out.    
+__fadeIn__ - Same as fadeOut but fading in obviously.     
+__slideUp__ - Make an element slide up and be hidden. Second argument must an element.    
+__slideDown__ - same as slideUp but down. To show an element.    
+__scrollUp__ - Scroll to top of the page smoothly. (no element needed)    
+__scrollTo__ - Scroll the window to a value. (y axis). Second argument must be the value to scroll to.  	   
+ 
+
+Full list of Animax Methods
+-----------------------------
+
+#### createValues(start, end, style)
+Create an array of values between the start and end point based on the style.
+
+#### add(animationObj [, animationObj2] [, animationObj3] ... )
+Add a number of animation objects into animax ready to be run simultaneously.
+
+#### create( string|object [, element|needed value])
+Create an animation object either from scratch or one stored inside Animax.
+
+#### runAll([function callback])
+Run all the stored animationObjects (added by .add() ) simultaneously. Optional callback is called when all animations are finished.
+
+#### run(animationObj [, string|int duration])
+Run an animationObject independantly. 
+
+#### clear() 
+Clear animax of all stored animations. After doing this runAll will do nothing, until more animations have been added.
+
+#### resetAll() 
+Reset all the stored animation objects ready to be run again.
+
+#### setPreset( string name, object object)
+Set an animation object as a preset so it can be used easier in the future.
+```javascript
+animax.setPreset('grow', {
+	start : 0, 
+	end : 100,
+	callback : function(v, e) {
+		e.style.padding = v + 'px';
+	}
+});
+
+animax.create('grow', document.getElementById('foo'));
+```
+#### config(string|object option [, mixed value]);
+Set a config value, so when a property is not specified in an animation object the default is set.
+```javascript
+animax.config('duration', 'fast'); //now all objects created which do not specify a duration will be given a duration of 'fast'
+```
