@@ -63,14 +63,14 @@
 		//creates the values inbetween start and end. 
 		createValues : function(start, end, type) {
 			var values = []
-			, total = parseInt( start ) //ensures maths is done rather than concatenation
+			, total = start //ensures maths is done rather than concatenation
 			, diff = end - start //diff from end and start
-			, ratios = this.styles[ type ];
-			if(!ratios) return [];
-			var frames = ratios.length;
+			, increments = typeof type === 'string' ? this.styles[ type ] : type;
+			if(!increments) return [];
+			var frames = increments.length;
 			
 			for (var i = 0; i < frames; i++) {
-				total += ( diff*ratios[i] ) / 100;
+				total += ( diff*increments[i] ) / 100;
 				values[i] = (total+'').replace(/(\.\d)\d+/, '$1');
 			}
 			return values;
@@ -84,7 +84,7 @@
 		},
 		
 		// create an animation object
-		create : function( obj, element ) {
+		create : function( obj, element, extraData ) {
 			if(typeof obj === 'string') {
 				obj = this.presets[obj];
 			}
@@ -97,6 +97,9 @@
 				}
 				obj.length = obj.values.length;
 				obj.element = element;
+				if(extraData) {
+					for(var i in extraData) obj.data(i, extraData[i]);
+				}
 			}
 			
 			return obj;	
@@ -149,7 +152,7 @@
 					if(a.curTweek >= a.length) {
 						a.onFinish();
 						a.finished = true;
-						clearTimeout( t );
+						clearInterval( t );
 					}
 				}
 			}, time / a.length);
@@ -176,6 +179,20 @@
 			else {
 				for(var i in option) this.defaultObj[ i ] = option[ i ];
 			}
+		},
+		
+		getCurrent : function(elem, prop) {
+			if(elem.style && elem.style[prop]) return elem.style[prop];
+			if(window.getComputedStyle) {
+				return elem.ownerDocument.defaultView.getComputedStyle(elem, null).getPropertyValue(prop);
+			}
+			if(elem.computedStyle) {
+				return elem.computedStyle[prop]
+			}
+			if(elem.currentStyle) {
+				return elem.currentStyle[prop];
+			}
+			return null
 		}
 	};
 	

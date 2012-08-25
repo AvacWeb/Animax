@@ -185,7 +185,8 @@ __fadeIn__ - Same as fadeOut but fading in obviously.
 __slideUp__ - Make an element slide up and be hidden. Second argument must an element.    
 __slideDown__ - same as slideUp but down. To show an element.    
 __scrollUp__ - Scroll to top of the page smoothly. (no element needed)    
-__scrollTo__ - Scroll the window to a value. (y axis). Second argument must be the value to scroll to.  	   
+__scrollTo__ - Scroll the window to a value. (y axis). Second argument must be the value to scroll to.  	 
+__implode__ - Implode an element. Decreases width and height at the same time.  
  
 
 Full list of Animax Methods
